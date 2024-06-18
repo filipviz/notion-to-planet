@@ -26,7 +26,7 @@ for idx, file in enumerate(my_path.iterdir()):
 
 # Find the planet the user wants to write to
 while True:
-    idx = input("Which Planet would you like to write to?\n> ")
+    idx = input("Which Planet would you like to write to?\n> ") # pyright: ignore
     if int(idx)-1 in planet_uuids.keys():
         break
     print("Invalid selection. Please try again.")
@@ -93,7 +93,7 @@ for item in notion_media.iterdir():
         date_object = datetime.strptime(date_string, "%B %d, %Y")
     
     timestamp = datetime.timestamp(date_object) if date_object else time.time() # Use current time if no date found
-    planet_item["created"] = int(timestamp) + 978307200, # Time since 2001-01-01 (swift epoch)
+    planet_item["created"] = int(timestamp) - 978307200 # Time since 2001-01-01 (swift epoch)
     
     # Get the post content
     split_item = itemstr.split("\n\n")

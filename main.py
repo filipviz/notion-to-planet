@@ -48,9 +48,7 @@ for path in notion_export.iterdir():
     if path.is_dir():
         notion_media = path
         break
-
-# Make sure we found the media dir
-if not notion_media:
+else:
     raise FileNotFoundError("Could not find the Notion media directory.")
 
 for item in notion_media.iterdir():
@@ -83,16 +81,20 @@ for item in notion_media.iterdir():
         destination_path = destination_dir / file
         shutil.copyfile(file_path, destination_path)
         planet_item["attachments"] = [file]
+        planet_item["audioFilename"] = file
+        planet_item["hasAudio"] = True
     else:
         print(f"Could not find file {file} for item {str(item)}. Skipping.")
+
+    timestamp = time.time() # Use the current time as a default
     
     # Get the date of the post
     date_search = re.search("^Date: (.+)$", itemstr, re.MULTILINE)
     if date_search:
         date_string = date_search.group(0)[6:]
         date_object = datetime.strptime(date_string, "%B %d, %Y")
-    
-    timestamp = datetime.timestamp(date_object) if date_object else time.time() # Use current time if no date found
+        timestamp = datetime.timestamp(date_object)
+
     planet_item["created"] = int(timestamp) - 978307200 # Time since 2001-01-01 (swift epoch)
     
     # Get the post content
